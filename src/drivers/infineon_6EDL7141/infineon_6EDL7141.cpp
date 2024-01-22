@@ -2,9 +2,9 @@
 
 #include "./infineon_6EDL7141.h"
 
-void Infineon6EDL7141Driver3PWM::init(SPIClass *_spi)
+void Infineon6EDL7141Driver3PWM::init(SPIClass *_spi, uint32_t clock)
 {
-	Infineon6EDL7141Driver::init(_spi);
+	Infineon6EDL7141Driver::init(_spi, clock);
 	delayMicroseconds(1);
 	PWMCfgRegister pwmConfig = Infineon6EDL7141Driver::readPWMConfigRegister();
 	pwmConfig.setPWMMode(PWMMode::PWM3_Mode);
@@ -12,9 +12,9 @@ void Infineon6EDL7141Driver3PWM::init(SPIClass *_spi)
 	BLDCDriver3PWM::init();
 };
 
-void Infineon6EDL7141Driver6PWM::init(SPIClass *_spi)
+void Infineon6EDL7141Driver6PWM::init(SPIClass *_spi, uint32_t clock)
 {
-	Infineon6EDL7141Driver::init(_spi);
+	Infineon6EDL7141Driver::init(_spi, clock);
 	delayMicroseconds(1);
 	PWMCfgRegister pwmConfig = Infineon6EDL7141Driver::readPWMConfigRegister();
 	pwmConfig.setPWMMode(PWMMode::PWM6_Mode);
@@ -42,7 +42,7 @@ void handleInterrupt()
 {
 }
 
-void Infineon6EDL7141Driver::init(SPIClass *_spi, uint32_t clock = 1000000)
+void Infineon6EDL7141Driver::init(SPIClass *_spi, uint32_t clock)
 {
 	spi = _spi;
 	settings = SPISettings(clock, MSBFIRST, SPI_MODE1);

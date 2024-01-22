@@ -59,10 +59,10 @@ enum CurrentSenseReference
 
 enum CurrentThreshold
 {
-	_450mA = 0b00,
-	_300mA = 0b01,
-	_150mA = 0b10,
-	_50mA = 0b11
+	CT_450mA = 0b00,
+	CT_300mA = 0b01,
+	CT_150mA = 0b10,
+	CT_50mA = 0b11
 };
 
 enum DVDDVoltage
@@ -74,39 +74,39 @@ enum DVDDVoltage
 
 enum BuckFrequency
 {
-	_500kHz = 0b0,
-	_1MHz = 0b1
+	BF_500kHz = 0b0,
+	BF_1MHz = 0b1
 };
 
 enum DVDDTurnOnDelay
 {
-	_200us = 0b00,
-	_400us = 0b01,
-	_600us = 0b10,
-	_800us = 0b11
+	DTOD_200us = 0b00,
+	DTOD_400us = 0b01,
+	DTOD_600us = 0b10,
+	DTOD_800us = 0b11
 };
 
 enum ADCInputSelection
 {
-	IDIGITAL = 0b00,
-	DVDD = 0b01,
-	VDDB = 0b10
+	AIS_IDIGITAL = 0b00,
+	AIS_DVDD = 0b01,
+	AIS_VDDB = 0b10
 };
 
 enum GenericFiltering
 {
-	_8_SAMPLES = 0b00,
-	_16_SAMPLES = 0b01,
-	_32_SAMPLES = 0b10,
-	_64_SAMPLES = 0b11
+	GF_8_SAMPLES = 0b00,
+	GF_16_SAMPLES = 0b01,
+	GF_32_SAMPLES = 0b10,
+	GF_64_SAMPLES = 0b11
 };
 
 enum PVDDFiltering
 {
-	_32_SAMPLES = 0b00,
-	_16_SAMPLES = 0b01,
-	_8_SAMPLES = 0b10,
-	_1_SAMPLE = 0b11
+	PF_32_SAMPLES = 0b00,
+	PF_16_SAMPLES = 0b01,
+	PF_8_SAMPLES = 0b10,
+	PF_1_SAMPLE = 0b11
 };
 
 enum OnePWMFreewheel
@@ -148,42 +148,42 @@ enum WatchDogFaultConfig
 
 enum DVDDRestartDelay
 {
-	_500us = 0b0000,
-	_1000us = 0b0001,
-	_1500us = 0b0010,
-	_2000us = 0b0011,
-	_2500us = 0b0100,
-	_3000us = 0b0101,
-	_3500us = 0b0110,
-	_4000us = 0b0111,
-	_4500us = 0b1000,
-	_5000us = 0b1001,
-	_5500us = 0b1010,
-	_6000us = 0b1011,
-	_6500us = 0b1100,
-	_7000us = 0b1101,
-	_7500us = 0b1110,
-	_8000us = 0b1111,
+	DRD_500us = 0b0000,
+	DRD_1000us = 0b0001,
+	DRD_1500us = 0b0010,
+	DRD_2000us = 0b0011,
+	DRD_2500us = 0b0100,
+	DRD_3000us = 0b0101,
+	DRD_3500us = 0b0110,
+	DRD_4000us = 0b0111,
+	DRD_4500us = 0b1000,
+	DRD_5000us = 0b1001,
+	DRD_5500us = 0b1010,
+	DRD_6000us = 0b1011,
+	DRD_6500us = 0b1100,
+	DRD_7000us = 0b1101,
+	DRD_7500us = 0b1110,
+	DRD_8000us = 0b1111,
 };
 
 enum GateDriverCurrent // for slew control
 {
-	_10mA = 0b0000,
-	_20mA = 0b0001,
-	_30mA = 0b0010,
-	_40mA = 0b0011,
-	_50mA = 0b0100,
-	_60mA = 0b0101,
-	_80mA = 0b0110,
-	_100mA = 0b0111,
-	_125mA = 0b1000,
-	_150mA = 0b1001,
-	_175mA = 0b1010,
-	_200mA = 0b1011,
-	_250mA = 0b1100,
-	_300mA = 0b1101,
-	_400mA = 0b1110,
-	_500mA = 0b1111,
+	GDC_10mA = 0b0000,
+	GDC_20mA = 0b0001,
+	GDC_30mA = 0b0010,
+	GDC_40mA = 0b0011,
+	GDC_50mA = 0b0100,
+	GDC_60mA = 0b0101,
+	GDC_80mA = 0b0110,
+	GDC_100mA = 0b0111,
+	GDC_125mA = 0b1000,
+	GDC_150mA = 0b1001,
+	GDC_175mA = 0b1010,
+	GDC_200mA = 0b1011,
+	GDC_250mA = 0b1100,
+	GDC_300mA = 0b1101,
+	GDC_400mA = 0b1110,
+	GDC_500mA = 0b1111,
 };
 
 /*
@@ -216,31 +216,30 @@ enum CurrentSenseGainMode
 
 enum BlankingTime
 {
-	_0_ns = 0b0000,
-	_50_ns = 0b0001,
-	_100_ns = 0b0010,
-	_200_ns = 0b0011,
-	_300_ns = 0b0100,
-	_400_ns = 0b0101,
-	_500_ns = 0b0110,
-	_600_ns = 0b0111,
-	_700_ns = 0b1000,
-	_800_ns = 0b1001,
-	_900_ns = 0b1010,
-	_1_us = 0b1011,
-	_2_us = 0b1100,
-	_4_us = 0b1101, // page 93
-
-	_6_us = 0b1110,
-	_8_us = 0b1111,
+	BT_0_ns = 0b0000,
+	BT_50_ns = 0b0001,
+	BT_100_ns = 0b0010,
+	BT_200_ns = 0b0011,
+	BT_300_ns = 0b0100,
+	BT_400_ns = 0b0101,
+	BT_500_ns = 0b0110,
+	BT_600_ns = 0b0111,
+	BT_700_ns = 0b1000,
+	BT_800_ns = 0b1001,
+	BT_900_ns = 0b1010,
+	BT_1_us = 0b1011,
+	BT_2_us = 0b1100,
+	BT_4_us = 0b1101, // page 93
+	BT_6_us = 0b1110,
+	BT_8_us = 0b1111,
 };
 
 enum DeglitchTime
 {
-	_0_μs = 0b00,
-	_2_μs = 0b01,
-	_4_μs = 0b10,
-	_8_μs = 0b11,
+	DT_0_us = 0b00,
+	DT_2_us = 0b01,
+	DT_4_us = 0b10,
+	DT_8_us = 0b11,
 };
 
 enum EventCountTrigger
