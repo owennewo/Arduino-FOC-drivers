@@ -26,7 +26,7 @@ void Infineon6EDL7141Driver6PWM::init(SPIClass *_spi, uint32_t clock)
  * SPI setup:
  *
  *  capture on falling, propagate on rising =
- *  MSB first
+ *  MSB first. clock idels low therefore this is a MODE1 SPI
  *
  * 	24 bit words
  * 	 outgoing: R/W:1 addr:7 parity:0 data:16
@@ -67,32 +67,19 @@ void Infineon6EDL7141Driver::init(SPIClass *_spi, uint32_t clock)
 
 uint16_t Infineon6EDL7141Driver::readSPI(uint8_t addr)
 {
-	digitalWrite(cs, LOW);
 	spi->beginTransaction(settings);
-
-	uint8_t command = (addr & 0x7F) << 1 | 1; // 1st bit is 1 for READ
-
-	spi->transfer(command);
-	uint16_t data = spi->transfer16(0x0000);
-
+	spi->transfer(addr);
+	uint16_t result = spi->transfer16(0x0);
 	spi->endTransaction();
-	digitalWrite(cs, HIGH);
-
-	return data;
+	return result;
 }
 
 uint16_t Infineon6EDL7141Driver::writeSPI(uint8_t addr, uint16_t value)
 {
-	digitalWrite(cs, LOW);
 	spi->beginTransaction(settings);
-
-	uint8_t command = (addr & 0x7F) << 1; // 1st bit is 0 for WRITE
-
-	spi->transfer(command);
+	spi->transfer(addr | 0b10000000); // add WRITE bit
 	uint16_t result = spi->transfer16(value);
-
 	spi->endTransaction();
-	digitalWrite(cs, HIGH);
 	return result;
 }
 
@@ -101,7 +88,6 @@ FaultStatus Infineon6EDL7141Driver::readFaultStatus()
 	FaultStatus data;
 	uint16_t result = readSPI(FAULT_ST_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
@@ -110,7 +96,6 @@ TempStatus Infineon6EDL7141Driver::readTemperatureStatus()
 	TempStatus data;
 	uint16_t result = readSPI(TEMP_ST_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
@@ -119,7 +104,6 @@ SupplyStatus Infineon6EDL7141Driver::readVoltateSupplyStatus()
 	SupplyStatus data;
 	uint16_t result = readSPI(SUPPLY_ST_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
@@ -128,7 +112,6 @@ FunctStatus Infineon6EDL7141Driver::readFunctionStatus()
 	FunctStatus data;
 	uint16_t result = readSPI(FUNCT_ST_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
@@ -137,7 +120,6 @@ OTPStatus Infineon6EDL7141Driver::readOneTimeProgramStatus()
 	OTPStatus data;
 	uint16_t result = readSPI(OTP_ST_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
@@ -146,7 +128,6 @@ ADCStatus Infineon6EDL7141Driver::readADCStatus()
 	ADCStatus data;
 	uint16_t result = readSPI(ADC_ST_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
@@ -155,7 +136,6 @@ CPStatus Infineon6EDL7141Driver::readChargePumpStatus()
 	CPStatus data;
 	uint16_t result = readSPI(CP_ST_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
@@ -164,7 +144,6 @@ DeviceID Infineon6EDL7141Driver::readDeviceID()
 	DeviceID data;
 	uint16_t result = readSPI(DEVICE_ID_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
@@ -175,7 +154,6 @@ DeviceID Infineon6EDL7141Driver::readDeviceID()
 void Infineon6EDL7141Driver::writeFaultClearRegister(FaultsClrRegister faultsClr)
 {
 	uint16_t result = writeSPI(FAULTS_CLR_ADDR, faultsClr.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 void Infineon6EDL7141Driver::clearFaults(bool nonLatched = true, bool latched = true)
@@ -192,14 +170,12 @@ SupplyCfgRegister Infineon6EDL7141Driver::readVoltageSupplyConfigRegister()
 	SupplyCfgRegister data;
 	uint16_t result = readSPI(SUPPLY_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeVoltageSupplyConfigRegister(SupplyCfgRegister supplyCfg)
 {
 	uint16_t result = writeSPI(SUPPLY_CFG_ADDR, supplyCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 ADCCfgRegister Infineon6EDL7141Driver::readADCConfigRegister()
@@ -207,14 +183,12 @@ ADCCfgRegister Infineon6EDL7141Driver::readADCConfigRegister()
 	ADCCfgRegister data;
 	uint16_t result = readSPI(ADC_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeADCConfigRegister(ADCCfgRegister adcCfg)
 {
 	uint16_t result = writeSPI(ADC_CFG_ADDR, adcCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 PWMCfgRegister Infineon6EDL7141Driver::readPWMConfigRegister()
@@ -222,14 +196,12 @@ PWMCfgRegister Infineon6EDL7141Driver::readPWMConfigRegister()
 	PWMCfgRegister data;
 	uint16_t result = readSPI(PWM_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writePWMConfigRegister(PWMCfgRegister pwmCfg)
 {
 	uint16_t result = writeSPI(PWM_CFG_ADDR, pwmCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 SensorCfgRegister Infineon6EDL7141Driver::readSensorConfigRegister()
@@ -237,14 +209,12 @@ SensorCfgRegister Infineon6EDL7141Driver::readSensorConfigRegister()
 	SensorCfgRegister data;
 	uint16_t result = readSPI(SENSOR_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeSensorConfigRegister(SensorCfgRegister sensorCfg)
 {
 	uint16_t result = writeSPI(SENSOR_CFG_ADDR, sensorCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 WDCfgRegister Infineon6EDL7141Driver::readWatchDogConfigRegister()
@@ -252,14 +222,12 @@ WDCfgRegister Infineon6EDL7141Driver::readWatchDogConfigRegister()
 	WDCfgRegister data;
 	uint16_t result = readSPI(WD_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeWatchDogConfigRegister(WDCfgRegister wdCfg)
 {
 	uint16_t result = writeSPI(WD_CFG_ADDR, wdCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 WDCfg2Register Infineon6EDL7141Driver::readWatchDogConfig2Register()
@@ -267,14 +235,12 @@ WDCfg2Register Infineon6EDL7141Driver::readWatchDogConfig2Register()
 	WDCfg2Register data;
 	uint16_t result = readSPI(WD_CFG2_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeWatchDogConfig2Register(WDCfg2Register wdCfg2)
 {
 	uint16_t result = writeSPI(WD_CFG2_ADDR, wdCfg2.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 IDriveCfgRegister Infineon6EDL7141Driver::readIDriveConfigRegister()
@@ -282,14 +248,12 @@ IDriveCfgRegister Infineon6EDL7141Driver::readIDriveConfigRegister()
 	IDriveCfgRegister data;
 	uint16_t result = readSPI(IDRIVE_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeIDriveConfigRegister(IDriveCfgRegister idriveCfg)
 {
 	uint16_t result = writeSPI(IDRIVE_CFG_ADDR, idriveCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 IDrivePreCfgRegister Infineon6EDL7141Driver::readIDrivePreConfigRegister()
@@ -297,14 +261,12 @@ IDrivePreCfgRegister Infineon6EDL7141Driver::readIDrivePreConfigRegister()
 	IDrivePreCfgRegister data;
 	uint16_t result = readSPI(IDRIVE_PRE_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeIDrivePreConfigRegister(IDrivePreCfgRegister idrivePreCfg)
 {
 	uint16_t result = writeSPI(IDRIVE_PRE_CFG_ADDR, idrivePreCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 TDriveSrcCfgRegister Infineon6EDL7141Driver::readTDriveSourceConfigRegister()
@@ -312,14 +274,12 @@ TDriveSrcCfgRegister Infineon6EDL7141Driver::readTDriveSourceConfigRegister()
 	TDriveSrcCfgRegister data;
 	uint16_t result = readSPI(TDRIVE_SRC_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeTDriveSourceConfigRegister(TDriveSrcCfgRegister tdriveSrcCfg)
 {
 	uint16_t result = writeSPI(TDRIVE_SRC_CFG_ADDR, tdriveSrcCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 TDriveSinkCfgRegister Infineon6EDL7141Driver::readTDriveSinkConfigRegister()
@@ -327,14 +287,12 @@ TDriveSinkCfgRegister Infineon6EDL7141Driver::readTDriveSinkConfigRegister()
 	TDriveSinkCfgRegister data;
 	uint16_t result = readSPI(TDRIVE_SINK_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeTDriveSinkConfigRegister(TDriveSinkCfgRegister tdriveSinkCfg)
 {
 	uint16_t result = writeSPI(TDRIVE_SINK_CFG_ADDR, tdriveSinkCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 DTCfgRegister Infineon6EDL7141Driver::readDeadTimeConfigRegister()
@@ -342,14 +300,12 @@ DTCfgRegister Infineon6EDL7141Driver::readDeadTimeConfigRegister()
 	DTCfgRegister data;
 	uint16_t result = readSPI(DT_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeDeadTimeConfigRegister(DTCfgRegister dtCfg)
 {
 	uint16_t result = writeSPI(DT_CFG_ADDR, dtCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 CPCfgRegister Infineon6EDL7141Driver::readChargePumpConfigRegister()
@@ -357,14 +313,12 @@ CPCfgRegister Infineon6EDL7141Driver::readChargePumpConfigRegister()
 	CPCfgRegister data;
 	uint16_t result = readSPI(CP_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeChargePumpConfigRegister(CPCfgRegister cpCfg)
 {
 	uint16_t result = writeSPI(CP_CFG_ADDR, cpCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 CSAmpCfgRegister Infineon6EDL7141Driver::readCurrentSenseAmplifierConfigRegister()
@@ -372,14 +326,12 @@ CSAmpCfgRegister Infineon6EDL7141Driver::readCurrentSenseAmplifierConfigRegister
 	CSAmpCfgRegister data;
 	uint16_t result = readSPI(CSAMP_CFG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeCurrentSenseAmplifierConfigRegister(CSAmpCfgRegister csAmpCfg)
 {
 	uint16_t result = writeSPI(CSAMP_CFG_ADDR, csAmpCfg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 CSAmpCfg2Register Infineon6EDL7141Driver::readCurrentSenseAmplifierConfig2Register()
@@ -387,14 +339,12 @@ CSAmpCfg2Register Infineon6EDL7141Driver::readCurrentSenseAmplifierConfig2Regist
 	CSAmpCfg2Register data;
 	uint16_t result = readSPI(CSAMP_CFG2_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeCurrentSenseAmplifierConfig2Register(CSAmpCfg2Register csAmpCfg2)
 {
 	uint16_t result = writeSPI(CSAMP_CFG2_ADDR, csAmpCfg2.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
 
 OTPProgRegister Infineon6EDL7141Driver::readOneTimeProgramRegister()
@@ -402,12 +352,10 @@ OTPProgRegister Infineon6EDL7141Driver::readOneTimeProgramRegister()
 	OTPProgRegister data;
 	uint16_t result = readSPI(OTP_PROG_ADDR);
 	data.reg = result;
-	delayMicroseconds(1); // delay at least 400ns between operations
 	return data;
 }
 
 void Infineon6EDL7141Driver::writeOneTimeProgramRegister(OTPProgRegister otpProg)
 {
 	uint16_t result = writeSPI(OTP_PROG_ADDR, otpProg.reg);
-	delayMicroseconds(1); // delay at least 400ns between operations
 }
