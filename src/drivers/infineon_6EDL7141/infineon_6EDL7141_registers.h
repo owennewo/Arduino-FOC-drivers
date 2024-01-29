@@ -357,7 +357,7 @@ typedef union
 	bool isDVDDOverVoltage() { return DVDD_OVST == 0b1; };
 	bool isVDDBUnderVoltage() { return VDDB_UVST == 0b1; };
 	bool isVDDBOverVoltage() { return VDDB_OVST == 0b1; };
-	uint8_t getPVDDVoltage() { return PVDD_VAL; };
+	float getPVDDVoltage() { return 0.581f * PVDD_VAL + 5.52f; };
 
 } PowerSupplyStatus;
 
