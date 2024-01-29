@@ -321,7 +321,7 @@ typedef union
 	bool isWatchdog() { return WD_FLT == 0b1; };
 	bool isOTPMemory() { return OTP_FLT == 0b1; };
 
-} FaultStatus;
+} FaultAndWarningStatus;
 
 typedef union
 {
@@ -335,7 +335,7 @@ typedef union
 	{
 		return -94 + (TEMP_VAL * 2);
 	}
-} TempStatus;
+} TemperatureStatus;
 
 typedef union
 {
@@ -359,7 +359,7 @@ typedef union
 	bool isVDDBOverVoltage() { return VDDB_OVST == 0b1; };
 	uint8_t getPVDDVoltage() { return PVDD_VAL; };
 
-} SupplyStatus;
+} PowerSupplyStatus;
 
 typedef union
 {
@@ -379,7 +379,7 @@ typedef union
 	bool isDVDDSetPoint5V() { return DVDD_ST == 0b1; };
 	CurrentSenseGain getCurrentSenseGain() { return static_cast<CurrentSenseGain>(CS_GAIN_ST); };
 
-} FunctStatus;
+} FunctionalStatus;
 
 typedef union
 {
@@ -423,7 +423,7 @@ typedef union
 	uint16_t reg;
 	uint8_t getChargePumpHighSideVoltage() { return VCCHS_VAL; };
 	uint8_t getChargePumpLowSideVoltage() { return VCCLS_VAL; };
-} CPStatus;
+} ChargePumpsStatus;
 
 typedef union
 {
@@ -449,7 +449,7 @@ typedef union
 	uint16_t reg;
 	void setClearNonLatchedFaults(bool clear) { CLR_FLTS = clear; };
 	void setClearLatchedFaults(bool clear) { CLR_LATCH = clear; };
-} FaultsClrRegister;
+} FaultsClear;
 
 typedef union
 {
@@ -479,7 +479,7 @@ typedef union
 	void setBuckFrequency(BuckFrequency frequency) { BK_FREQ = frequency; };	// STANDBY
 	void setDVDDTurnOnDelay(DVDDTurnOnDelay delay) { DVDD_TON_DELAY = delay; }; // OTP ONLY
 	void setChargePumpPreCharge(bool enabled) { CP_PRECHARGE_EN = enabled; };	// STANDBY
-} SupplyCfgRegister;
+} PowerSupplyConfiguration;
 
 typedef union
 {
@@ -499,9 +499,9 @@ typedef union
 	void setOnDemandGenericFiltering(GenericFiltering filtering) { ADC_FILT_CFG = filtering; }; // ALWAYS
 	void setOnDemandPVDDFiltering(PVDDFiltering filtering) { ADC_FILT_CFG_PVDD = filtering; };	// ALWAYS
 
-} ADCCfgRegister;
+} ADCConfiguration;
 
-typedef union PWMCfgRegister
+typedef union PWMConfiguration
 {
 	struct
 	{
@@ -519,7 +519,7 @@ typedef union PWMCfgRegister
 	void setBrake(BrakeConfig brakeConfig) { BRAKE_CFG = brakeConfig; };						   // ALWAYS
 	void setOnePwmHallRecirculating(bool enable) { PWM_RECIRC = enable; };						   // STANDBY
 
-} PWMCfgRegister;
+} PWMConfiguration;
 
 typedef union
 {
@@ -540,7 +540,7 @@ typedef union
 	}
 	void setDisableOvertemperatureShutdown(boolean disable) { OTS_DIS = disable; };						 // ALWAYS
 	void setCurrentSensingTimingMode(CurrentSenseAmplifierTiming timingMode) { CS_TMODE = timingMode; }; // ALWAYS
-} SensorCfgRegister;
+} SensorConfiguration;
 
 typedef union
 {
@@ -563,7 +563,7 @@ typedef union
 			WD_TIMER_T = (microseconds / 100) - 1;
 		}
 	}
-} WDCfgRegister;
+} WatchDogConfiguration;
 
 typedef union
 {
@@ -598,7 +598,7 @@ typedef union
 		}
 	}
 	void setBuckWatchDogDisable(bool disable) { WD_BK_DIS = disable; }; // OTP ONLY
-} WDCfg2Register;
+} WatchDogConfiguration2;
 
 typedef union
 {
@@ -614,7 +614,7 @@ typedef union
 	void setHighSideSinkCurrent(GateDriverCurrent current) { IHS_SINK = current; };	 // ALWAYS
 	void setLowSideSourceCurrent(GateDriverCurrent current) { ILS_SRC = current; };	 // ALWAYS
 	void setLowSideSinkCurrent(GateDriverCurrent current) { ILS_SINK = current; };	 // ALWAYS
-} IDriveCfgRegister;
+} GateDriverCurrentConfiguration;
 
 typedef union
 {
@@ -630,7 +630,7 @@ typedef union
 	void setPreChargeSinkCurrent(GateDriverCurrent current) { I_PRE_SINK = current; };	// ALWAYS
 	void setPreChargeEnable(bool enable) { I_PRE_EN = enable; };						// ALWAYS
 
-} IDrivePreCfgRegister;
+} PreChargeGateDriverCurrentConfiguration;
 
 typedef union
 {
@@ -662,7 +662,7 @@ typedef union
 			TDRIVE1 = (nanoseconds / 10) - 1;
 		}
 	};
-} TDriveSrcCfgRegister;
+} GateDriverSourcingTimingConfiguration;
 
 typedef union
 {
@@ -694,7 +694,7 @@ typedef union
 			TDRIVE4 = (nanoseconds / 10) - 1;
 		}
 	};
-} TDriveSinkCfgRegister;
+} GateDriverSinkingTimingConfiguration;
 
 typedef union
 {
@@ -718,7 +718,16 @@ typedef union
 			DT_FALL = (nanoseconds - 120) / 80;
 		}
 	}
-} DTCfgRegister;
+	uint16_t getDeadTimeRise()
+	{
+		return (DT_RISE * 80) + 120;
+	}
+	uint16_t getDeadTimeFall()
+	{
+		return (DT_FALL * 80) + 120;
+	}
+
+} DeadTimeConfiguration;
 
 typedef union
 {
@@ -731,7 +740,7 @@ typedef union
 	uint16_t reg;
 	void setChargePumpClockFrequency(ChargePumpClockFrequency freq) { CP_CLK_CFG = freq; };	 // ALWAYS
 	void setChargePumpClockSpreadSpectrumDisable(bool disable) { CP_CLK_SS_DIS = disable; }; // STANDBY
-} CPCfgRegister;
+} ChargePumpConfiguration;
 
 typedef union
 {
@@ -759,7 +768,7 @@ typedef union
 	void setDeglitchTime(DeglitchTime deglitchTime) { CS_OCP_DEGLITCH = deglitchTime; };		 // STANDBY
 	void setCurrentSenseOCPFaultTrigger(EventCountTrigger trigger) { CS_OCPFLT_CFG = trigger; }; // STANDBY
 
-} CSAmpCfgRegister;
+} CurrentSenseAmplifierConfiguration;
 
 typedef union
 {
@@ -785,7 +794,7 @@ typedef union
 	void setVREFInputSelection(bool useExternalVREF) { VREF_INSEL = useExternalVREF; };	   // STANDBY
 	void setDisableNegativeOCP(bool disable) { CS_NEG_OCP_DIS = disable; };				   // ALWAYS
 	void setCurrentSenseAutoZero(AutoZero autoZero) { CS_AZ_CFG = autoZero; };			   // ALWAYS
-} CSAmpCfg2Register;
+} CurrentSenseAmplifierConfiguration2;
 
 typedef union
 {
@@ -798,6 +807,6 @@ typedef union
 	uint16_t reg;
 	void setOTPProgram(bool enable) { OTP_PROG = enable; }; // STANDBY (programming of OTP only in STANDBY)
 	void setUserID(uint16_t id) { USER_ID = id; };			// ALWAYS
-} OTPProgRegister;
+} OTPProgram;
 
 #endif

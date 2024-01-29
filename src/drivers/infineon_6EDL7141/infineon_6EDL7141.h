@@ -22,62 +22,62 @@ public:
 	void clearFaults(bool nonLatched, bool latched);
 
 	// status registers
-	FaultStatus readFaultStatus();
-	TempStatus readTemperatureStatus();
-	SupplyStatus readVoltateSupplyStatus();
-	FunctStatus readFunctionStatus();
-	OTPStatus readOneTimeProgramStatus();
+	FaultAndWarningStatus readFaultAndWarningStatus();
+	TemperatureStatus readTemperatureStatus();
+	PowerSupplyStatus readPowerSupplyStatus();
+	FunctionalStatus readFunctionalStatus();
+	OTPStatus readOTPStatus();
 	ADCStatus readADCStatus();
-	CPStatus readChargePumpStatus();
+	ChargePumpsStatus readChargePumpsStatus();
 	DeviceID readDeviceID();
 
 	// control registers
-	void writeFaultClearRegister(FaultsClrRegister faultsClr);
+	void writeFaultClear(FaultsClear clear);
 
-	SupplyCfgRegister readVoltageSupplyConfigRegister();
-	void writeVoltageSupplyConfigRegister(SupplyCfgRegister supplyCfg);
+	PowerSupplyConfiguration readPowerSupplyConfiguration();
+	void writePowerSupplyConfiguration(PowerSupplyConfiguration configuration);
 
-	ADCCfgRegister readADCConfigRegister();
-	void writeADCConfigRegister(ADCCfgRegister adcCfg);
+	ADCConfiguration readADCConfiguration();
+	void writeADCConfiguration(ADCConfiguration configuration);
 
-	PWMCfgRegister readPWMConfigRegister();
-	void writePWMConfigRegister(PWMCfgRegister pwmCfg);
+	PWMConfiguration readPWMConfiguration();
+	void writePWMConfiguration(PWMConfiguration configuration);
 
-	SensorCfgRegister readSensorConfigRegister();
-	void writeSensorConfigRegister(SensorCfgRegister sensorCfg);
+	SensorConfiguration readSensorConfiguration();
+	void writeSensorConfiguration(SensorConfiguration configuration);
 
-	WDCfgRegister readWatchDogConfigRegister();
-	void writeWatchDogConfigRegister(WDCfgRegister wdCfg);
+	WatchDogConfiguration readWatchDogConfiguration();
+	void writeWatchDogConfiguration(WatchDogConfiguration configuration);
 
-	WDCfg2Register readWatchDogConfig2Register();
-	void writeWatchDogConfig2Register(WDCfg2Register wdCfg2);
+	WatchDogConfiguration2 readWatchDogConfiguration2();
+	void writeWatchDogConfiguration2(WatchDogConfiguration2 configuration);
 
-	IDriveCfgRegister readIDriveConfigRegister();
-	void writeIDriveConfigRegister(IDriveCfgRegister idriveCfg);
+	GateDriverCurrentConfiguration readGateDriverCurrentConfiguration();
+	void writeGateDriverCurrentConfiguration(GateDriverCurrentConfiguration configuration);
 
-	IDrivePreCfgRegister readIDrivePreConfigRegister();
-	void writeIDrivePreConfigRegister(IDrivePreCfgRegister idrivePreCfg);
+	PreChargeGateDriverCurrentConfiguration readPreChargeGateDriverCurrentConfiguration();
+	void writePreChargeGateDriverCurrentConfiguration(PreChargeGateDriverCurrentConfiguration configuration);
 
-	TDriveSrcCfgRegister readTDriveSourceConfigRegister();
-	void writeTDriveSourceConfigRegister(TDriveSrcCfgRegister tdriveSrcCfg);
+	GateDriverSourcingTimingConfiguration readGateDriverSourcingTimingConfiguration();
+	void writeGateDriverSourcingTimingConfiguration(GateDriverSourcingTimingConfiguration configuration);
 
-	TDriveSinkCfgRegister readTDriveSinkConfigRegister();
-	void writeTDriveSinkConfigRegister(TDriveSinkCfgRegister tdriveSinkCfg);
+	GateDriverSinkingTimingConfiguration readGateDriverSinkingTimingConfiguration();
+	void writeGateDriverSinkingTimingConfiguration(GateDriverSinkingTimingConfiguration configuration);
 
-	DTCfgRegister readDeadTimeConfigRegister();
-	void writeDeadTimeConfigRegister(DTCfgRegister dtCfg);
+	DeadTimeConfiguration readDeadTimeConfiguration();
+	void writeDeadTimeConfiguration(DeadTimeConfiguration configuration);
 
-	CPCfgRegister readChargePumpConfigRegister();
-	void writeChargePumpConfigRegister(CPCfgRegister cpCfg);
+	ChargePumpConfiguration readChargePumpConfiguration();
+	void writeChargePumpConfiguration(ChargePumpConfiguration configuration);
 
-	CSAmpCfgRegister readCurrentSenseAmplifierConfigRegister();
-	void writeCurrentSenseAmplifierConfigRegister(CSAmpCfgRegister csAmpCfg);
+	CurrentSenseAmplifierConfiguration readCurrentSenseAmplifierConfiguration();
+	void writeCurrentSenseAmplifierConfiguration(CurrentSenseAmplifierConfiguration configuration);
 
-	CSAmpCfg2Register readCurrentSenseAmplifierConfig2Register();
-	void writeCurrentSenseAmplifierConfig2Register(CSAmpCfg2Register csAmpCfg2);
+	CurrentSenseAmplifierConfiguration2 readCurrentSenseAmplifierConfiguration2();
+	void writeCurrentSenseAmplifierConfiguration2(CurrentSenseAmplifierConfiguration2 configuration);
 
-	OTPProgRegister readOneTimeProgramRegister();
-	void writeOneTimeProgramRegister(OTPProgRegister otpProg);
+	OTPProgram readOTPProgram();
+	void writeOTPProgram(OTPProgram otpProg);
 
 	void clearFault(); // TODO check for fault condition methods
 

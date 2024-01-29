@@ -6,9 +6,9 @@ void Infineon6EDL7141Driver3PWM::init(SPIClass *_spi, uint32_t clock)
 {
 	Infineon6EDL7141Driver::init(_spi, clock);
 	delayMicroseconds(1);
-	PWMCfgRegister pwmConfig = Infineon6EDL7141Driver::readPWMConfigRegister();
+	PWMConfiguration pwmConfig = Infineon6EDL7141Driver::readPWMConfiguration();
 	pwmConfig.setPWMMode(PWMMode::PWM3_Mode);
-	Infineon6EDL7141Driver::writePWMConfigRegister(pwmConfig);
+	Infineon6EDL7141Driver::writePWMConfiguration(pwmConfig);
 	BLDCDriver3PWM::init();
 };
 
@@ -16,9 +16,9 @@ void Infineon6EDL7141Driver6PWM::init(SPIClass *_spi, uint32_t clock)
 {
 	Infineon6EDL7141Driver::init(_spi, clock);
 	delayMicroseconds(1);
-	PWMCfgRegister pwmConfig = Infineon6EDL7141Driver::readPWMConfigRegister();
+	PWMConfiguration pwmConfig = Infineon6EDL7141Driver::readPWMConfiguration();
 	pwmConfig.setPWMMode(PWMMode::PWM6_Mode);
-	Infineon6EDL7141Driver::writePWMConfigRegister(pwmConfig);
+	Infineon6EDL7141Driver::writePWMConfiguration(pwmConfig);
 	BLDCDriver6PWM::init();
 };
 
@@ -83,39 +83,39 @@ uint16_t Infineon6EDL7141Driver::writeSPI(uint8_t addr, uint16_t value)
 	return result;
 }
 
-FaultStatus Infineon6EDL7141Driver::readFaultStatus()
+FaultAndWarningStatus Infineon6EDL7141Driver::readFaultAndWarningStatus()
 {
-	FaultStatus data;
+	FaultAndWarningStatus data;
 	uint16_t result = readSPI(FAULT_ST_ADDR);
 	data.reg = result;
 	return data;
 }
 
-TempStatus Infineon6EDL7141Driver::readTemperatureStatus()
+TemperatureStatus Infineon6EDL7141Driver::readTemperatureStatus()
 {
-	TempStatus data;
+	TemperatureStatus data;
 	uint16_t result = readSPI(TEMP_ST_ADDR);
 	data.reg = result;
 	return data;
 }
 
-SupplyStatus Infineon6EDL7141Driver::readVoltateSupplyStatus()
+PowerSupplyStatus Infineon6EDL7141Driver::readPowerSupplyStatus()
 {
-	SupplyStatus data;
+	PowerSupplyStatus data;
 	uint16_t result = readSPI(SUPPLY_ST_ADDR);
 	data.reg = result;
 	return data;
 }
 
-FunctStatus Infineon6EDL7141Driver::readFunctionStatus()
+FunctionalStatus Infineon6EDL7141Driver::readFunctionalStatus()
 {
-	FunctStatus data;
+	FunctionalStatus data;
 	uint16_t result = readSPI(FUNCT_ST_ADDR);
 	data.reg = result;
 	return data;
 }
 
-OTPStatus Infineon6EDL7141Driver::readOneTimeProgramStatus()
+OTPStatus Infineon6EDL7141Driver::readOTPStatus()
 {
 	OTPStatus data;
 	uint16_t result = readSPI(OTP_ST_ADDR);
@@ -131,9 +131,9 @@ ADCStatus Infineon6EDL7141Driver::readADCStatus()
 	return data;
 }
 
-CPStatus Infineon6EDL7141Driver::readChargePumpStatus()
+ChargePumpsStatus Infineon6EDL7141Driver::readChargePumpsStatus()
 {
-	CPStatus data;
+	ChargePumpsStatus data;
 	uint16_t result = readSPI(CP_ST_ADDR);
 	data.reg = result;
 	return data;
@@ -151,211 +151,211 @@ DeviceID Infineon6EDL7141Driver::readDeviceID()
  * Control Registers
  */
 
-void Infineon6EDL7141Driver::writeFaultClearRegister(FaultsClrRegister faultsClr)
+void Infineon6EDL7141Driver::writeFaultClear(FaultsClear clear)
 {
-	uint16_t result = writeSPI(FAULTS_CLR_ADDR, faultsClr.reg);
+	uint16_t result = writeSPI(FAULTS_CLR_ADDR, clear.reg);
 }
 
 void Infineon6EDL7141Driver::clearFaults(bool nonLatched = true, bool latched = true)
 {
-	FaultsClrRegister data;
+	FaultsClear data;
 	data.reg = 0;
 	data.setClearNonLatchedFaults(nonLatched);
 	data.setClearLatchedFaults(latched);
-	writeFaultClearRegister(data);
+	writeFaultClear(data);
 }
 
-SupplyCfgRegister Infineon6EDL7141Driver::readVoltageSupplyConfigRegister()
+PowerSupplyConfiguration Infineon6EDL7141Driver::readPowerSupplyConfiguration()
 {
-	SupplyCfgRegister data;
+	PowerSupplyConfiguration data;
 	uint16_t result = readSPI(SUPPLY_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeVoltageSupplyConfigRegister(SupplyCfgRegister supplyCfg)
+void Infineon6EDL7141Driver::writePowerSupplyConfiguration(PowerSupplyConfiguration supplyCfg)
 {
 	uint16_t result = writeSPI(SUPPLY_CFG_ADDR, supplyCfg.reg);
 }
 
-ADCCfgRegister Infineon6EDL7141Driver::readADCConfigRegister()
+ADCConfiguration Infineon6EDL7141Driver::readADCConfiguration()
 {
-	ADCCfgRegister data;
+	ADCConfiguration data;
 	uint16_t result = readSPI(ADC_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeADCConfigRegister(ADCCfgRegister adcCfg)
+void Infineon6EDL7141Driver::writeADCConfiguration(ADCConfiguration adcCfg)
 {
 	uint16_t result = writeSPI(ADC_CFG_ADDR, adcCfg.reg);
 }
 
-PWMCfgRegister Infineon6EDL7141Driver::readPWMConfigRegister()
+PWMConfiguration Infineon6EDL7141Driver::readPWMConfiguration()
 {
-	PWMCfgRegister data;
+	PWMConfiguration data;
 	uint16_t result = readSPI(PWM_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writePWMConfigRegister(PWMCfgRegister pwmCfg)
+void Infineon6EDL7141Driver::writePWMConfiguration(PWMConfiguration pwmCfg)
 {
 	uint16_t result = writeSPI(PWM_CFG_ADDR, pwmCfg.reg);
 }
 
-SensorCfgRegister Infineon6EDL7141Driver::readSensorConfigRegister()
+SensorConfiguration Infineon6EDL7141Driver::readSensorConfiguration()
 {
-	SensorCfgRegister data;
+	SensorConfiguration data;
 	uint16_t result = readSPI(SENSOR_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeSensorConfigRegister(SensorCfgRegister sensorCfg)
+void Infineon6EDL7141Driver::writeSensorConfiguration(SensorConfiguration sensorCfg)
 {
 	uint16_t result = writeSPI(SENSOR_CFG_ADDR, sensorCfg.reg);
 }
 
-WDCfgRegister Infineon6EDL7141Driver::readWatchDogConfigRegister()
+WatchDogConfiguration Infineon6EDL7141Driver::readWatchDogConfiguration()
 {
-	WDCfgRegister data;
+	WatchDogConfiguration data;
 	uint16_t result = readSPI(WD_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeWatchDogConfigRegister(WDCfgRegister wdCfg)
+void Infineon6EDL7141Driver::writeWatchDogConfiguration(WatchDogConfiguration wdCfg)
 {
 	uint16_t result = writeSPI(WD_CFG_ADDR, wdCfg.reg);
 }
 
-WDCfg2Register Infineon6EDL7141Driver::readWatchDogConfig2Register()
+WatchDogConfiguration2 Infineon6EDL7141Driver::readWatchDogConfiguration2()
 {
-	WDCfg2Register data;
+	WatchDogConfiguration2 data;
 	uint16_t result = readSPI(WD_CFG2_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeWatchDogConfig2Register(WDCfg2Register wdCfg2)
+void Infineon6EDL7141Driver::writeWatchDogConfiguration2(WatchDogConfiguration2 wdCfg2)
 {
 	uint16_t result = writeSPI(WD_CFG2_ADDR, wdCfg2.reg);
 }
 
-IDriveCfgRegister Infineon6EDL7141Driver::readIDriveConfigRegister()
+GateDriverCurrentConfiguration Infineon6EDL7141Driver::readGateDriverCurrentConfiguration()
 {
-	IDriveCfgRegister data;
+	GateDriverCurrentConfiguration data;
 	uint16_t result = readSPI(IDRIVE_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeIDriveConfigRegister(IDriveCfgRegister idriveCfg)
+void Infineon6EDL7141Driver::writeGateDriverCurrentConfiguration(GateDriverCurrentConfiguration idriveCfg)
 {
 	uint16_t result = writeSPI(IDRIVE_CFG_ADDR, idriveCfg.reg);
 }
 
-IDrivePreCfgRegister Infineon6EDL7141Driver::readIDrivePreConfigRegister()
+PreChargeGateDriverCurrentConfiguration Infineon6EDL7141Driver::readPreChargeGateDriverCurrentConfiguration()
 {
-	IDrivePreCfgRegister data;
+	PreChargeGateDriverCurrentConfiguration data;
 	uint16_t result = readSPI(IDRIVE_PRE_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeIDrivePreConfigRegister(IDrivePreCfgRegister idrivePreCfg)
+void Infineon6EDL7141Driver::writePreChargeGateDriverCurrentConfiguration(PreChargeGateDriverCurrentConfiguration idrivePreCfg)
 {
 	uint16_t result = writeSPI(IDRIVE_PRE_CFG_ADDR, idrivePreCfg.reg);
 }
 
-TDriveSrcCfgRegister Infineon6EDL7141Driver::readTDriveSourceConfigRegister()
+GateDriverSourcingTimingConfiguration Infineon6EDL7141Driver::readGateDriverSourcingTimingConfiguration()
 {
-	TDriveSrcCfgRegister data;
+	GateDriverSourcingTimingConfiguration data;
 	uint16_t result = readSPI(TDRIVE_SRC_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeTDriveSourceConfigRegister(TDriveSrcCfgRegister tdriveSrcCfg)
+void Infineon6EDL7141Driver::writeGateDriverSourcingTimingConfiguration(GateDriverSourcingTimingConfiguration tdriveSrcCfg)
 {
 	uint16_t result = writeSPI(TDRIVE_SRC_CFG_ADDR, tdriveSrcCfg.reg);
 }
 
-TDriveSinkCfgRegister Infineon6EDL7141Driver::readTDriveSinkConfigRegister()
+GateDriverSinkingTimingConfiguration Infineon6EDL7141Driver::readGateDriverSinkingTimingConfiguration()
 {
-	TDriveSinkCfgRegister data;
+	GateDriverSinkingTimingConfiguration data;
 	uint16_t result = readSPI(TDRIVE_SINK_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeTDriveSinkConfigRegister(TDriveSinkCfgRegister tdriveSinkCfg)
+void Infineon6EDL7141Driver::writeGateDriverSinkingTimingConfiguration(GateDriverSinkingTimingConfiguration tdriveSinkCfg)
 {
 	uint16_t result = writeSPI(TDRIVE_SINK_CFG_ADDR, tdriveSinkCfg.reg);
 }
 
-DTCfgRegister Infineon6EDL7141Driver::readDeadTimeConfigRegister()
+DeadTimeConfiguration Infineon6EDL7141Driver::readDeadTimeConfiguration()
 {
-	DTCfgRegister data;
+	DeadTimeConfiguration data;
 	uint16_t result = readSPI(DT_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeDeadTimeConfigRegister(DTCfgRegister dtCfg)
+void Infineon6EDL7141Driver::writeDeadTimeConfiguration(DeadTimeConfiguration dtCfg)
 {
 	uint16_t result = writeSPI(DT_CFG_ADDR, dtCfg.reg);
 }
 
-CPCfgRegister Infineon6EDL7141Driver::readChargePumpConfigRegister()
+ChargePumpConfiguration Infineon6EDL7141Driver::readChargePumpConfiguration()
 {
-	CPCfgRegister data;
+	ChargePumpConfiguration data;
 	uint16_t result = readSPI(CP_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeChargePumpConfigRegister(CPCfgRegister cpCfg)
+void Infineon6EDL7141Driver::writeChargePumpConfiguration(ChargePumpConfiguration cpCfg)
 {
 	uint16_t result = writeSPI(CP_CFG_ADDR, cpCfg.reg);
 }
 
-CSAmpCfgRegister Infineon6EDL7141Driver::readCurrentSenseAmplifierConfigRegister()
+CurrentSenseAmplifierConfiguration Infineon6EDL7141Driver::readCurrentSenseAmplifierConfiguration()
 {
-	CSAmpCfgRegister data;
+	CurrentSenseAmplifierConfiguration data;
 	uint16_t result = readSPI(CSAMP_CFG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeCurrentSenseAmplifierConfigRegister(CSAmpCfgRegister csAmpCfg)
+void Infineon6EDL7141Driver::writeCurrentSenseAmplifierConfiguration(CurrentSenseAmplifierConfiguration csAmpCfg)
 {
 	uint16_t result = writeSPI(CSAMP_CFG_ADDR, csAmpCfg.reg);
 }
 
-CSAmpCfg2Register Infineon6EDL7141Driver::readCurrentSenseAmplifierConfig2Register()
+CurrentSenseAmplifierConfiguration2 Infineon6EDL7141Driver::readCurrentSenseAmplifierConfiguration2()
 {
-	CSAmpCfg2Register data;
+	CurrentSenseAmplifierConfiguration2 data;
 	uint16_t result = readSPI(CSAMP_CFG2_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeCurrentSenseAmplifierConfig2Register(CSAmpCfg2Register csAmpCfg2)
+void Infineon6EDL7141Driver::writeCurrentSenseAmplifierConfiguration2(CurrentSenseAmplifierConfiguration2 csAmpCfg2)
 {
 	uint16_t result = writeSPI(CSAMP_CFG2_ADDR, csAmpCfg2.reg);
 }
 
-OTPProgRegister Infineon6EDL7141Driver::readOneTimeProgramRegister()
+OTPProgram Infineon6EDL7141Driver::readOTPProgram()
 {
-	OTPProgRegister data;
+	OTPProgram data;
 	uint16_t result = readSPI(OTP_PROG_ADDR);
 	data.reg = result;
 	return data;
 }
 
-void Infineon6EDL7141Driver::writeOneTimeProgramRegister(OTPProgRegister otpProg)
+void Infineon6EDL7141Driver::writeOTPProgram(OTPProgram otpProg)
 {
 	uint16_t result = writeSPI(OTP_PROG_ADDR, otpProg.reg);
 }
