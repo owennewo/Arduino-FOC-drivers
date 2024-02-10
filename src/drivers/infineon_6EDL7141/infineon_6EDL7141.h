@@ -97,7 +97,7 @@ class Infineon6EDL7141Driver3PWM : public Infineon6EDL7141Driver, public BLDCDri
 {
 
 public:
-	Infineon6EDL7141Driver3PWM(int phA, int phB, int phC, int cs, bool currentLimit = false, int en = NOT_SET, int nFault = NOT_SET) : Infineon6EDL7141Driver(cs, currentLimit, nFault), BLDCDriver3PWM(phA, phB, phC, en) { enable_active_high = false; };
+	Infineon6EDL7141Driver3PWM(int phA, int phB, int phC, int cs, bool currentLimit = false, int en = NOT_SET, int nFault = NOT_SET) : Infineon6EDL7141Driver(cs, currentLimit, nFault), BLDCDriver3PWM(phA, phB, phC, en) { enable_active_high = true; };
 	virtual ~Infineon6EDL7141Driver3PWM(){};
 
 	virtual void init(SPIClass *_spi = &SPI, uint32_t clock = 1000000) override;
@@ -107,7 +107,7 @@ class Infineon6EDL7141Driver6PWM : public Infineon6EDL7141Driver, public BLDCDri
 {
 
 public:
-	Infineon6EDL7141Driver6PWM(int phA_h, int phA_l, int phB_h, int phB_l, int phC_h, int phC_l, int cs, bool currentLimit = false, int en = NOT_SET, int nFault = NOT_SET) : Infineon6EDL7141Driver(cs, currentLimit, nFault), BLDCDriver6PWM(phA_h, phA_l, phB_h, phB_l, phC_h, phC_l, en) { enable_active_high = false; };
+	Infineon6EDL7141Driver6PWM(int phA_h, int phA_l, int phB_h, int phB_l, int phC_h, int phC_l, int cs, bool currentLimit = false, int en = NOT_SET, int nFault = NOT_SET) : Infineon6EDL7141Driver(cs, currentLimit, nFault), BLDCDriver6PWM(phA_h, phA_l, phB_h, phB_l, phC_h, phC_l, en) { enable_active_high = true; };
 	virtual ~Infineon6EDL7141Driver6PWM(){};
 
 	virtual void init(SPIClass *_spi = &SPI, uint32_t clock = 1000000) override;
